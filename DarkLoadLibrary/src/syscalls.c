@@ -12,7 +12,7 @@ DWORD SW2_HashSyscall(PCSTR FunctionName)
 
     while (FunctionName[i])
     {
-        WORD PartialName = *(WORD*)((ULONG64)FunctionName + i++);
+        WORD PartialName = *(WORD*)((ULONG64) FunctionName + i++);
         Hash ^= PartialName + SW2_ROR8(Hash);
     }
 
@@ -39,6 +39,7 @@ BOOL SW2_PopulateSyscallList()
         PIMAGE_NT_HEADERS NtHeaders = SW2_RVA2VA(PIMAGE_NT_HEADERS, DllBase, DosHeader->e_lfanew);
         PIMAGE_DATA_DIRECTORY DataDirectory = (PIMAGE_DATA_DIRECTORY)NtHeaders->OptionalHeader.DataDirectory;
         DWORD VirtualAddress = DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+
         if (VirtualAddress == 0) continue;
 
         ExportDirectory = (PIMAGE_EXPORT_DIRECTORY)SW2_RVA2VA(ULONG_PTR, DllBase, VirtualAddress);
@@ -73,7 +74,8 @@ BOOL SW2_PopulateSyscallList()
             i++;
             if (i == SW2_MAX_ENTRIES) break;
         }
-    } while (--NumberOfNames);
+    }
+    while (--NumberOfNames);
 
     // Save total number of system calls found.
     SW2_SyscallList.Count = i;
